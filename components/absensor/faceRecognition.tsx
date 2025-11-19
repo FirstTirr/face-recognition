@@ -70,20 +70,31 @@ const FaceRecognition: React.FC = () => {
   }, [cameraActive]);
 
   const startCamera = async () => {
+    // Cek support kamera
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setError(
+        "Perangkat atau browser Anda tidak mendukung akses kamera.\n" +
+          "Gunakan browser terbaru seperti Google Chrome, Mozilla Firefox, atau Safari.\n" +
+          "Jika Anda membuka dari aplikasi lain (misal: Facebook, Instagram, TikTok, WebView), buka langsung di browser utama."
+      );
+      return;
+    }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: 'user',
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user",
           width: { ideal: 1280 },
-          height: { ideal: 960 }
-        } 
+          height: { ideal: 960 },
+        },
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
     } catch (err) {
-      console.error('Camera access denied:', err);
-      setError('Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan.');
+      console.error("Camera access denied:", err);
+      setError(
+        "Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan."
+      );
     }
   };
 
@@ -91,10 +102,10 @@ const FaceRecognition: React.FC = () => {
     setIsScanning(true);
     setError(null);
     setScanProgress(0);
-    
+
     // Simulate scanning progress
     const progressInterval = setInterval(() => {
-      setScanProgress(prev => {
+      setScanProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           completeScan();
@@ -108,7 +119,8 @@ const FaceRecognition: React.FC = () => {
   const completeScan = () => {
     // Simulate successful scan with random result
     setTimeout(() => {
-      const randomResult = mockResults[Math.floor(Math.random() * mockResults.length)];
+      const randomResult =
+        mockResults[Math.floor(Math.random() * mockResults.length)];
       setScanResult(randomResult);
       setScanComplete(true);
       setIsScanning(false);
@@ -122,14 +134,14 @@ const FaceRecognition: React.FC = () => {
     setShowResult(false);
     if (isValid) {
       // Handle successful validation
-      console.log('Face validated successfully:', scanResult);
+      console.log("Face validated successfully:", scanResult);
       // Reset after successful validation
       setTimeout(() => {
         resetScanner();
       }, 1000);
     } else {
       // Handle failed validation
-      console.log('Face validation failed');
+      console.log("Face validation failed");
       // Restart scanning
       setTimeout(() => {
         resetScanner();
@@ -150,7 +162,7 @@ const FaceRecognition: React.FC = () => {
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
       videoRef.current.srcObject = null;
     }
     setCameraActive(false);
@@ -168,17 +180,21 @@ const FaceRecognition: React.FC = () => {
                 <FaShieldAlt className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-800">Face Recognition</h1>
+                <h1 className="text-xl font-bold text-slate-800">
+                  Face Recognition
+                </h1>
                 <p className="text-sm text-slate-500">Sistem absensi wajah</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                cameraActive 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-gray-100 text-gray-700'
-              }`}>
-                {cameraActive ? 'Kamera Aktif' : 'Kamera Nonaktif'}
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  cameraActive
+                    ? "bg-green-100 text-green-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+              >
+                {cameraActive ? "Kamera Aktif" : "Kamera Nonaktif"}
               </span>
             </div>
           </div>
@@ -192,18 +208,20 @@ const FaceRecognition: React.FC = () => {
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-indigo-100 overflow-hidden">
             {/* Scanner Header */}
             <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-1">Pemindai Wajah</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-1">
+                Pemindai Wajah
+              </h2>
               <p className="text-indigo-100 text-sm">
                 Posisikan wajah Anda di dalam frame untuk memulai pemindaian
               </p>
             </div>
 
             {/* Scanner Body - Full Width Large Camera */}
-            <div className="p-4 sm:p-6">
-              {/* Large Camera View */}
-              <div className="relative w-full max-w-4xl mx-auto">
-                {/* Aspect ratio container for better face framing */}
-                <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/9] bg-slate-900 rounded-2xl overflow-hidden mb-6 shadow-2xl">
+            <div className="p-2 sm:p-4 lg:p-6">
+              {/* Large Camera View - Mobile Optimized */}
+              <div className="relative w-full">
+                {/* Aspect ratio container for better face framing - Mobile Optimized */}
+                <div className="relative aspect-[3/4] sm:aspect-[4/3] lg:aspect-[16/9] bg-slate-900 rounded-2xl overflow-hidden mb-6 shadow-2xl">
                   {!cameraActive ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
                       <FaCamera className="w-20 h-20 sm:w-24 sm:h-24 text-slate-600 mb-6" />
@@ -227,49 +245,61 @@ const FaceRecognition: React.FC = () => {
                         muted
                         className="w-full h-full object-cover"
                       />
-                      
-                      {/* Scanning Overlay */}
+                      {/* Overlay elips lonjong ke atas, lebih besar di tablet/laptop/desktop */}
+                      <div
+                        className="pointer-events-none absolute left-1/2 top-1/2"
+                        style={{
+                          transform: "translate(-50%, -50%)",
+                          width: "68vw",
+                          height: "85vw",
+                          maxWidth: "95%",
+                          maxHeight: "92%",
+                          minWidth: "120px",
+                          minHeight: "160px",
+                          border: "4px solid #a78bfa",
+                          borderRadius: "50% / 60%",
+                          boxSizing: "border-box",
+                          zIndex: 10,
+                          ...(window.innerWidth >= 640
+                            ? {
+                                width: "38vw",
+                                height: "55vw",
+                                minWidth: "160px",
+                                minHeight: "200px",
+                                maxWidth: "420px",
+                                maxHeight: "520px",
+                              }
+                            : {}),
+                          ...(window.innerWidth >= 1024
+                            ? {
+                                width: "28vw",
+                                height: "38vw",
+                                minWidth: "140px",
+                                minHeight: "180px",
+                                maxWidth: "340px",
+                                maxHeight: "400px",
+                              }
+                            : {}),
+                        }}
+                      />
+
+                      {/* Scanning Overlay - UI minimalis */}
                       {isScanning && (
-                        <div className="absolute inset-0 pointer-events-none">
-                          {/* Scanning Frame - Larger and more prominent */}
-                          <div className="absolute inset-4 sm:inset-6 lg:inset-8 border-2 border-indigo-400 rounded-2xl">
-                            {/* Corner Brackets - Larger */}
-                            <div className="absolute top-6 left-6 w-12 h-12 sm:w-16 sm:h-16 border-t-4 border-l-4 border-indigo-400 rounded-tl-xl"></div>
-                            <div className="absolute top-6 right-6 w-12 h-12 sm:w-16 sm:h-16 border-t-4 border-r-4 border-indigo-400 rounded-tr-xl"></div>
-                            <div className="absolute bottom-6 left-6 w-12 h-12 sm:w-16 sm:h-16 border-b-4 border-l-4 border-indigo-400 rounded-bl-xl"></div>
-                            <div className="absolute bottom-6 right-6 w-12 h-12 sm:w-16 sm:h-16 border-b-4 border-r-4 border-indigo-400 rounded-br-xl"></div>
-                          </div>
-                          
-                          {/* Center Guide Circle */}
-                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="w-48 h-48 sm:w-64 sm:h-64 border-2 border-indigo-400/30 rounded-full flex items-center justify-center">
-                              <div className="w-32 h-32 sm:w-40 sm:h-40 border border-indigo-400/50 rounded-full"></div>
+                        <div className="absolute inset-0 flex flex-col items-end justify-end">
+                          <div className="w-full bg-black/80 p-4 rounded-b-2xl">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-white text-base font-medium">
+                                Mendeteksi wajah...
+                              </span>
+                              <span className="text-white text-lg font-bold">
+                                {scanProgress}%
+                              </span>
                             </div>
-                          </div>
-                          
-                          {/* Scanning Lines - More prominent */}
-                          <div className="absolute inset-0">
-                            <div className="absolute inset-x-8 sm:inset-x-12 lg:inset-x-16 top-8 bottom-8">
-                              <div className="h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent animate-pulse"></div>
-                            </div>
-                            <div className="absolute inset-y-8 sm:inset-y-12 lg:inset-y-16 left-1/2 transform -translate-x-1/2 w-1">
-                              <div className="h-full bg-gradient-to-b from-transparent via-indigo-400 to-transparent animate-pulse"></div>
-                            </div>
-                          </div>
-                          
-                          {/* Progress Indicator - Larger */}
-                          <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 lg:bottom-10 lg:left-10 lg:right-10">
-                            <div className="bg-black/60 backdrop-blur-sm rounded-2xl p-4 sm:p-6">
-                              <div className="flex items-center justify-between mb-3">
-                                <span className="text-white text-base sm:text-lg font-medium">Mendeteksi wajah...</span>
-                                <span className="text-white text-lg sm:text-xl font-bold">{scanProgress}%</span>
-                              </div>
-                              <div className="w-full bg-black/30 rounded-full h-3 sm:h-4">
-                                <div 
-                                  className="bg-gradient-to-r from-indigo-400 to-purple-500 h-3 sm:h-4 rounded-full transition-all duration-300"
-                                  style={{ width: `${scanProgress}%` }}
-                                ></div>
-                              </div>
+                            <div className="w-full bg-black/30 rounded-full h-3">
+                              <div
+                                className="bg-gradient-to-r from-indigo-400 to-purple-500 h-3 rounded-full transition-all duration-300"
+                                style={{ width: `${scanProgress}%` }}
+                              ></div>
                             </div>
                           </div>
                         </div>
@@ -278,12 +308,16 @@ const FaceRecognition: React.FC = () => {
                       {/* Success Overlay - Larger */}
                       {scanComplete && !showResult && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 sm:p-12 flex flex-col items-center shadow-2xl">
-                            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
-                              <FaUserCheck className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
+                          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 sm:p-8 lg:p-12 flex flex-col items-center shadow-2xl">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-green-100 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                              <FaUserCheck className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-green-600" />
                             </div>
-                            <p className="text-slate-800 font-bold text-xl sm:text-2xl mb-2">Wajah terdeteksi!</p>
-                            <p className="text-slate-500 text-base sm:text-lg">Memproses data...</p>
+                            <p className="text-slate-800 font-bold text-lg sm:text-xl lg:text-2xl mb-2">
+                              Wajah terdeteksi!
+                            </p>
+                            <p className="text-slate-500 text-sm sm:text-base lg:text-lg">
+                              Memproses data...
+                            </p>
                           </div>
                         </div>
                       )}
@@ -358,8 +392,12 @@ const FaceRecognition: React.FC = () => {
                   <span className="text-xs font-bold text-indigo-600">1</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Pastikan pencahayaan baik</p>
-                  <p className="text-xs text-slate-500">Hindari bayangan atau cahaya terlalu terang</p>
+                  <p className="text-sm font-medium text-slate-700">
+                    Pastikan pencahayaan baik
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Hindari bayangan atau cahaya terlalu terang
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -367,8 +405,12 @@ const FaceRecognition: React.FC = () => {
                   <span className="text-xs font-bold text-indigo-600">2</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Posisikan wajah di frame</p>
-                  <p className="text-xs text-slate-500">Pastikan seluruh wajah terlihat jelas</p>
+                  <p className="text-sm font-medium text-slate-700">
+                    Posisikan wajah di frame
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Pastikan seluruh wajah terlihat jelas
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -376,8 +418,12 @@ const FaceRecognition: React.FC = () => {
                   <span className="text-xs font-bold text-indigo-600">3</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Hindari penggunaan masker</p>
-                  <p className="text-xs text-slate-500">Wajah harus terlihat sepenuhnya</p>
+                  <p className="text-sm font-medium text-slate-700">
+                    Hindari penggunaan masker
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Wajah harus terlihat sepenuhnya
+                  </p>
                 </div>
               </div>
             </div>
@@ -391,18 +437,25 @@ const FaceRecognition: React.FC = () => {
             </h3>
             <div className="space-y-3">
               {mockResults.slice(0, 3).map((result, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl"
+                >
                   <img
                     src={result.photo}
                     alt={result.name}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-800">{result.name}</p>
+                    <p className="text-sm font-medium text-slate-800">
+                      {result.name}
+                    </p>
                     <p className="text-xs text-slate-500">{result.class}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-green-600">{result.confidence}%</p>
+                    <p className="text-sm font-medium text-green-600">
+                      {result.confidence}%
+                    </p>
                     <p className="text-xs text-slate-400">Akurasi</p>
                   </div>
                 </div>
@@ -429,7 +482,9 @@ const FaceRecognition: React.FC = () => {
                   <FaTimes className="w-4 h-4 text-white" />
                 </button>
               </div>
-              <h2 className="text-xl font-bold text-white mb-1">Pemindaian Berhasil!</h2>
+              <h2 className="text-xl font-bold text-white mb-1">
+                Pemindaian Berhasil!
+              </h2>
               <p className="text-green-100 text-sm">
                 Wajah berhasil dikenali dengan akurasi {scanResult.confidence}%
               </p>
@@ -445,11 +500,17 @@ const FaceRecognition: React.FC = () => {
                   className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-100"
                 />
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-slate-800">{scanResult.name}</h3>
-                  <p className="text-sm text-slate-600 mb-1">NIS: {scanResult.nis}</p>
+                  <h3 className="text-lg font-bold text-slate-800">
+                    {scanResult.name}
+                  </h3>
+                  <p className="text-sm text-slate-600 mb-1">
+                    NIS: {scanResult.nis}
+                  </p>
                   <div className="flex items-center gap-2">
                     <FaGraduationCap className="w-4 h-4 text-indigo-600" />
-                    <span className="text-sm font-medium text-indigo-600">{scanResult.class}</span>
+                    <span className="text-sm font-medium text-indigo-600">
+                      {scanResult.class}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -457,17 +518,21 @@ const FaceRecognition: React.FC = () => {
               {/* Confidence Meter */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-slate-700">Tingkat Kepercayaan</span>
-                  <span className="text-sm font-bold text-green-600">{scanResult.confidence}%</span>
+                  <span className="text-sm font-medium text-slate-700">
+                    Tingkat Kepercayaan
+                  </span>
+                  <span className="text-sm font-bold text-green-600">
+                    {scanResult.confidence}%
+                  </span>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-3">
-                  <div 
+                  <div
                     className={`h-3 rounded-full transition-all duration-500 ${
-                      scanResult.confidence >= 95 
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-600'
+                      scanResult.confidence >= 95
+                        ? "bg-gradient-to-r from-green-500 to-emerald-600"
                         : scanResult.confidence >= 85
-                        ? 'bg-gradient-to-r from-yellow-500 to-orange-600'
-                        : 'bg-gradient-to-r from-red-500 to-pink-600'
+                        ? "bg-gradient-to-r from-yellow-500 to-orange-600"
+                        : "bg-gradient-to-r from-red-500 to-pink-600"
                     }`}
                     style={{ width: `${scanResult.confidence}%` }}
                   ></div>
