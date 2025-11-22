@@ -14,6 +14,11 @@ import {
   FaExclamationTriangle,
   FaRedo,
   FaUserCircle,
+  FaFingerprint,
+  FaHistory,
+  FaBolt,
+  FaBarcode,
+  FaEye,
 } from "react-icons/fa";
 
 interface ScanResult {
@@ -170,400 +175,340 @@ const FaceRecognition: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-indigo-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <FaShieldAlt className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-slate-800">
-                  Face Recognition
-                </h1>
-                <p className="text-sm text-slate-500">Sistem absensi wajah</p>
-              </div>
+    <div className="min-h-screen bg-[#E0E7F1] text-slate-900 font-mono p-4 md:p-8 selection:bg-orange-400 selection:text-black overflow-x-hidden">
+      <style jsx global>{`
+        @keyframes scan-fast {
+          0% {
+            top: 0%;
+          }
+          50% {
+            top: 100%;
+          }
+          100% {
+            top: 0%;
+          }
+        }
+        .animate-scan-fast {
+          animation: scan-fast 2s linear infinite;
+        }
+        .brutalist-shadow {
+          box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .brutalist-shadow-sm {
+          box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .brutalist-shadow-lg {
+          box-shadow: 12px 12px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .blur-mask {
+          mask-image: radial-gradient(
+            ellipse 160px 225px at center,
+            transparent 98%,
+            black 100%
+          );
+          -webkit-mask-image: radial-gradient(
+            ellipse 160px 225px at center,
+            transparent 98%,
+            black 100%
+          );
+        }
+        @media (min-width: 640px) {
+          .blur-mask {
+            mask-image: radial-gradient(
+              ellipse 200px 275px at center,
+              transparent 98%,
+              black 100%
+            );
+            -webkit-mask-image: radial-gradient(
+              ellipse 200px 275px at center,
+              transparent 98%,
+              black 100%
+            );
+          }
+        }
+      `}</style>
+
+      {/* The Grid Layout */}
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-[85vh]">
+        {/* LEFT COLUMN: CONTROLS & INFO (4 cols) */}
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          {/* Branding Card */}
+          <div className="bg-white border-4 border-black brutalist-shadow p-6 relative overflow-hidden group transition-transform hover:-translate-y-1">
+            <div className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-2 py-1 border-l-4 border-b-4 border-black">
+              BETA_V2
             </div>
-            <div className="flex items-center gap-2">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  cameraActive
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                {cameraActive ? "Kamera Aktif" : "Kamera Nonaktif"}
+            <h1 className="text-4xl font-black uppercase leading-none mb-2 tracking-tighter">
+              Face
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">
+                Recog.
               </span>
-            </div>
+            </h1>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+              <FaBolt className="text-yellow-500" /> Biometric Security System
+            </p>
           </div>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Full Width Camera Section */}
-        <div className="mb-8">
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-indigo-100 overflow-hidden">
-            {/* Scanner Header */}
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-1">
-                Pemindai Wajah
-              </h2>
-              <p className="text-indigo-100 text-sm">
-                Posisikan wajah Anda di dalam frame untuk memulai pemindaian
-              </p>
-            </div>
-
-            {/* Scanner Body - Full Width Large Camera */}
-            <div className="p-2 sm:p-4 lg:p-6">
-              {/* Large Camera View - Mobile Optimized */}
-              <div className="relative w-full">
-                {/* Aspect ratio container for better face framing - Mobile Optimized */}
-                <div className="relative aspect-[3/4] sm:aspect-[4/3] lg:aspect-[16/9] bg-slate-900 rounded-2xl overflow-hidden mb-6 shadow-2xl">
-                  {!cameraActive ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
-                      <FaCamera className="w-20 h-20 sm:w-24 sm:h-24 text-slate-600 mb-6" />
-                      <p className="text-slate-400 text-center text-lg sm:text-xl mb-8 px-4">
-                        Kamera belum aktif
-                      </p>
-                      <button
-                        onClick={() => setCameraActive(true)}
-                        className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-xl hover:shadow-lg transition-all duration-200 flex items-center gap-3 text-lg font-medium"
-                      >
-                        <FaCamera className="w-5 h-5" />
-                        Aktifkan Kamera
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        className="w-full h-full object-cover"
-                      />
-                      {/* Overlay elips lonjong ke atas, lebih besar di tablet/laptop/desktop */}
-                      <div
-                        className="pointer-events-none absolute left-1/2 top-1/2"
-                        style={{
-                          transform: "translate(-50%, -50%)",
-                          width: "86vw",
-                          height: "100vw",
-                          maxWidth: "95%",
-                          maxHeight: "100%",
-                          minWidth: "180px",
-                          minHeight: "220px",
-                          border: "4px solid #a78bfa",
-                          borderRadius: "50% / 60%",
-                          boxSizing: "border-box",
-                          zIndex: 10,
-                          ...(window.innerWidth >= 640
-                            ? {
-                                width: "44vw",
-                                height: "62vw",
-                                minWidth: "160px",
-                                minHeight: "220px",
-                                maxWidth: "520px",
-                                maxHeight: "640px",
-                              }
-                            : {}),
-                          ...(window.innerWidth >= 1024
-                            ? {
-                                width: "34vw",
-                                height: "46vw",
-                                minWidth: "140px",
-                                minHeight: "180px",
-                                maxWidth: "420px",
-                                maxHeight: "520px",
-                              }
-                            : {}),
-                        }}
-                      />
-
-                      {/* Scanning Overlay - UI minimalis */}
-                      {isScanning && (
-                        <div className="absolute inset-0 flex flex-col items-end justify-end">
-                          <div className="w-full bg-black/80 p-4 rounded-b-2xl">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-white text-base font-medium">
-                                Mendeteksi wajah...
-                              </span>
-                              <span className="text-white text-lg font-bold">
-                                {scanProgress}%
-                              </span>
-                            </div>
-                            <div className="w-full bg-black/30 rounded-full h-3">
-                              <div
-                                className="bg-gradient-to-r from-indigo-400 to-purple-500 h-3 rounded-full transition-all duration-300"
-                                style={{ width: `${scanProgress}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Success Overlay - Larger */}
-                      {scanComplete && !showResult && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 sm:p-8 lg:p-12 flex flex-col items-center shadow-2xl">
-                            <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-green-100 rounded-full flex items-center justify-center mb-4 sm:mb-6">
-                              <FaUserCheck className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-green-600" />
-                            </div>
-                            <p className="text-slate-800 font-bold text-lg sm:text-xl lg:text-2xl mb-2">
-                              Wajah terdeteksi!
-                            </p>
-                            <p className="text-slate-500 text-sm sm:text-base lg:text-lg">
-                              Memproses data...
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Control Buttons - Larger and more prominent */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                {!cameraActive ? (
-                  <button
-                    onClick={() => setCameraActive(true)}
-                    className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-10 py-4 rounded-xl hover:shadow-lg transition-all duration-200 flex items-center gap-3 text-lg font-medium w-full sm:w-auto"
-                  >
-                    <FaCamera className="w-5 h-5" />
-                    Aktifkan Kamera
-                  </button>
+          {/* Status Terminal */}
+          <div className="bg-black text-green-400 p-4 border-4 border-black brutalist-shadow flex-1 min-h-[200px] font-mono text-xs overflow-hidden relative">
+            <div className="absolute top-2 right-2 animate-pulse w-3 h-3 bg-green-500 rounded-full"></div>
+            <div className="space-y-2 opacity-90 font-bold">
+              <p>&gt; SYSTEM_INIT...</p>
+              <p>&gt; CHECKING_PERMISSIONS... [OK]</p>
+              <p>
+                &gt; CAMERA_MODULE...{" "}
+                {cameraActive ? (
+                  <span className="text-green-400 bg-green-900/30 px-1">
+                    [ACTIVE]
+                  </span>
                 ) : (
-                  <>
-                    {!isScanning && !scanComplete && (
-                      <button
-                        onClick={startScanning}
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-10 py-4 rounded-xl hover:shadow-lg transition-all duration-200 flex items-center gap-3 text-lg font-medium w-full sm:w-auto"
-                      >
-                        <FaUserCheck className="w-5 h-5" />
-                        Mulai Pemindaian
-                      </button>
-                    )}
-                    {isScanning && (
-                      <button
-                        onClick={resetScanner}
-                        className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-10 py-4 rounded-xl hover:shadow-lg transition-all duration-200 flex items-center gap-3 text-lg font-medium w-full sm:w-auto"
-                      >
-                        <FaTimes className="w-5 h-5" />
-                        Batalkan
-                      </button>
-                    )}
-                    <button
-                      onClick={stopCamera}
-                      className="border-2 border-slate-300 text-slate-700 px-10 py-4 rounded-xl hover:bg-slate-50 transition-all duration-200 flex items-center gap-3 text-lg font-medium w-full sm:w-auto"
-                    >
-                      <FaTimes className="w-5 h-5" />
-                      Matikan Kamera
-                    </button>
-                  </>
+                  <span className="text-red-500 bg-red-900/30 px-1">
+                    [OFFLINE]
+                  </span>
                 )}
-              </div>
-
-              {/* Error Message */}
-              {error && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-                  <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-                  <p className="text-red-700 text-sm">{error}</p>
-                </div>
-              )}
+              </p>
+              {isScanning && <p>&gt; SCANNING_SEQUENCE_STARTED...</p>}
+              {scanComplete && <p>&gt; DATA_RECEIVED. PROCESSING...</p>}
+              <p className="animate-pulse">_</p>
             </div>
-          </div>
-        </div>
 
-        {/* Info Section - Below Camera */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Instructions */}
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-indigo-100 p-6">
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <FaUserCircle className="w-5 h-5 text-indigo-600" />
-              Petunjuk Pemindaian
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-bold text-indigo-600">1</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700">
-                    Pastikan pencahayaan baik
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    Hindari bayangan atau cahaya terlalu terang
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-bold text-indigo-600">2</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700">
-                    Posisikan wajah di frame
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    Pastikan seluruh wajah terlihat jelas
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-bold text-indigo-600">3</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700">
-                    Hindari penggunaan masker
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    Wajah harus terlihat sepenuhnya
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* Decorative ASCII or Lines */}
+            <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
           </div>
 
-          {/* Recent Scans */}
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-indigo-100 p-6">
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <FaGraduationCap className="w-5 h-5 text-indigo-600" />
-              Pemindaian Terakhir
-            </h3>
-            <div className="space-y-3">
-              {mockResults.slice(0, 3).map((result, index) => (
+          {/* History / Stats (Brutalist List) */}
+          <div className="bg-white border-4 border-black brutalist-shadow p-0">
+            <div className="bg-black text-white p-3 font-bold uppercase text-sm flex justify-between items-center border-b-4 border-black">
+              <span>Recent Logs</span>
+              <FaHistory />
+            </div>
+            <div className="divide-y-2 divide-black">
+              {mockResults.slice(0, 3).map((result, i) => (
                 <div
-                  key={index}
-                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl"
+                  key={i}
+                  className="p-3 flex items-center gap-3 hover:bg-orange-50 transition-colors cursor-pointer group"
                 >
                   <img
                     src={result.photo}
-                    alt={result.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-10 h-10 border-2 border-black grayscale group-hover:grayscale-0 transition-all object-cover"
                   />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-800">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-sm leading-tight truncate">
                       {result.name}
-                    </p>
-                    <p className="text-xs text-slate-500">{result.class}</p>
+                    </div>
+                    <div className="text-[10px] text-slate-500 uppercase truncate">
+                      {result.class}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-green-600">
-                      {result.confidence}%
-                    </p>
-                    <p className="text-xs text-slate-400">Akurasi</p>
+                  <div className="font-bold text-xs bg-black text-white px-1 py-0.5">
+                    {result.confidence}%
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Result Modal */}
-      {showResult && scanResult && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md transform transition-all duration-300 scale-100 shadow-2xl">
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6 rounded-t-2xl">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <FaUserCheck className="w-6 h-6 text-white" />
-                </div>
-                <button
-                  onClick={() => setShowResult(false)}
-                  className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <FaTimes className="w-4 h-4 text-white" />
-                </button>
+        {/* RIGHT COLUMN: CAMERA VIEWPORT (8 cols) */}
+        <div className="lg:col-span-8 flex flex-col">
+          {/* Main Viewport Frame */}
+          <div className="flex-1 bg-white border-4 border-black brutalist-shadow-lg relative flex flex-col min-h-[600px] md:min-h-[700px]">
+            {/* Viewport Header */}
+            <div className="border-b-4 border-black p-3 flex justify-between items-center bg-slate-100">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-full border-2 border-black bg-red-500"></div>
+                <div className="w-4 h-4 rounded-full border-2 border-black bg-yellow-500"></div>
+                <div className="w-4 h-4 rounded-full border-2 border-black bg-green-500"></div>
               </div>
-              <h2 className="text-xl font-bold text-white mb-1">
-                Pemindaian Berhasil!
-              </h2>
-              <p className="text-green-100 text-sm">
-                Wajah berhasil dikenali dengan akurasi {scanResult.confidence}%
-              </p>
+              <div className="font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                Cam_Feed_01
+              </div>
+              <FaBarcode className="text-2xl opacity-50" />
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6">
-              {/* User Info */}
-              <div className="flex items-center gap-4 mb-6">
-                <img
-                  src={scanResult.photo}
-                  alt={scanResult.name}
-                  className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-100"
-                />
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-slate-800">
-                    {scanResult.name}
-                  </h3>
-                  <p className="text-sm text-slate-600 mb-1">
-                    NIS: {scanResult.nis}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <FaGraduationCap className="w-4 h-4 text-indigo-600" />
-                    <span className="text-sm font-medium text-indigo-600">
-                      {scanResult.class}
-                    </span>
+            {/* Camera Area */}
+            <div className="relative flex-1 bg-[#1a1a1a] overflow-hidden flex items-center justify-center group">
+              {!cameraActive ? (
+                <div className="text-center space-y-6 z-10 p-8">
+                  <div className="inline-block p-8 border-4 border-dashed border-slate-700 rounded-full bg-slate-800/50 backdrop-blur-sm">
+                    <FaCamera className="text-6xl text-slate-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-white font-black text-3xl uppercase tracking-widest mb-2">
+                      Signal Lost
+                    </h2>
+                    <p className="text-slate-500 font-mono text-sm">
+                      CAMERA FEED DISCONNECTED
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setCameraActive(true)}
+                    className="bg-orange-500 hover:bg-orange-400 text-black font-black uppercase py-4 px-8 border-4 border-black brutalist-shadow-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all flex items-center gap-3 mx-auto"
+                  >
+                    <FaBolt /> Initialize Camera
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Blur Overlay */}
+                  <div className="absolute inset-0 z-10 backdrop-blur-sm bg-black/30 blur-mask"></div>
+
+                  {/* HUD Overlay */}
+                  <div className="absolute inset-0 pointer-events-none border-[20px] border-black/10 z-10">
+                    <div className="absolute top-4 left-4 w-12 h-12 border-l-4 border-t-4 border-white/80"></div>
+                    <div className="absolute top-4 right-4 w-12 h-12 border-r-4 border-t-4 border-white/80"></div>
+                    <div className="absolute bottom-4 left-4 w-12 h-12 border-l-4 border-b-4 border-white/80"></div>
+                    <div className="absolute bottom-4 right-4 w-12 h-12 border-r-4 border-b-4 border-white/80"></div>
+
+                    {/* Face Frame */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[450px] sm:w-[400px] sm:h-[550px] border-2 border-white/30 rounded-[50%]">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black text-white text-[10px] px-3 py-1 font-bold border border-white/20">
+                        TARGET ZONE
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scanning Effect */}
+                  {isScanning && (
+                    <div className="absolute inset-0 bg-green-500/10 z-20">
+                      <div className="w-full h-1 bg-green-500 shadow-[0_0_20px_rgba(0,255,0,0.8)] absolute animate-scan-fast"></div>
+                      <div className="absolute bottom-10 left-0 right-0 text-center">
+                        <span className="bg-black text-green-400 px-6 py-3 font-mono font-bold text-xl border-2 border-green-500 shadow-[4px_4px_0px_0px_rgba(0,255,0,0.4)]">
+                          ANALYZING... {scanProgress}%
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Control Bar */}
+            <div className="border-t-4 border-black p-4 bg-white flex flex-wrap gap-4 justify-center">
+              {cameraActive && !isScanning && !scanComplete && (
+                <button
+                  onClick={startScanning}
+                  className="flex-1 bg-black text-white font-black uppercase py-4 px-6 border-4 border-transparent hover:bg-white hover:text-black hover:border-black transition-all flex items-center justify-center gap-2 text-lg brutalist-shadow-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                >
+                  <FaUserCheck /> Start Scan
+                </button>
+              )}
+              {isScanning && (
+                <button
+                  onClick={resetScanner}
+                  className="flex-1 bg-red-600 text-white font-black uppercase py-4 px-6 border-4 border-black hover:bg-red-500 transition-all flex items-center justify-center gap-2 brutalist-shadow-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                >
+                  <FaTimes /> Abort
+                </button>
+              )}
+              {cameraActive && (
+                <button
+                  onClick={stopCamera}
+                  className="bg-slate-200 text-black font-bold uppercase py-4 px-6 border-4 border-black hover:bg-slate-300 transition-all brutalist-shadow-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Brutalist Modal */}
+      {showResult && scanResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-lg border-4 border-black shadow-[16px_16px_0px_0px_#f97316] relative animate-in fade-in zoom-in duration-300">
+            <div className="bg-black text-white p-4 flex justify-between items-center">
+              <h2 className="font-black uppercase text-xl tracking-tighter flex items-center gap-2">
+                <FaCheck className="text-green-500" /> Identity_Verified
+              </h2>
+              <button
+                onClick={() => setShowResult(false)}
+                className="hover:text-orange-500 transition-colors"
+              >
+                <FaTimes className="text-xl" />
+              </button>
+            </div>
+
+            <div className="p-6 md:p-8">
+              <div className="flex flex-col sm:flex-row gap-6">
+                <div className="relative self-center sm:self-start">
+                  <img
+                    src={scanResult.photo}
+                    className="w-32 h-32 object-cover border-4 border-black"
+                  />
+                  <div className="absolute -bottom-3 -right-3 bg-green-500 border-4 border-black p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <FaCheck className="text-white" />
+                  </div>
+                </div>
+                <div className="space-y-3 flex-1 text-center sm:text-left">
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase bg-slate-100 px-2 py-0.5">
+                      Full Name
+                    </label>
+                    <div className="text-2xl font-black leading-tight mt-1">
+                      {scanResult.name}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase bg-slate-100 px-2 py-0.5">
+                      ID Number
+                    </label>
+                    <div className="font-mono font-bold mt-1">
+                      {scanResult.nis}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase bg-slate-100 px-2 py-0.5">
+                      Class
+                    </label>
+                    <div className="font-bold mt-1">{scanResult.class}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Confidence Meter */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-slate-700">
-                    Tingkat Kepercayaan
+              <div className="mt-8 border-t-4 border-black pt-6">
+                <div className="flex justify-between items-end mb-2">
+                  <span className="font-bold uppercase text-sm">
+                    Confidence Score
                   </span>
-                  <span className="text-sm font-bold text-green-600">
+                  <span className="font-black text-3xl">
                     {scanResult.confidence}%
                   </span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-3">
+                <div className="h-6 w-full border-4 border-black p-1 bg-white">
                   <div
-                    className={`h-3 rounded-full transition-all duration-500 ${
-                      scanResult.confidence >= 95
-                        ? "bg-gradient-to-r from-green-500 to-emerald-600"
-                        : scanResult.confidence >= 85
-                        ? "bg-gradient-to-r from-yellow-500 to-orange-600"
-                        : "bg-gradient-to-r from-red-500 to-pink-600"
-                    }`}
+                    className="h-full bg-orange-500 transition-all duration-1000"
                     style={{ width: `${scanResult.confidence}%` }}
                   ></div>
                 </div>
               </div>
 
-              {/* Validation Question */}
-              <div className="bg-slate-50 rounded-xl p-4 mb-6">
-                <p className="text-center text-slate-700 font-medium mb-4">
-                  Apakah ini benar data Anda?
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => handleValidation(false)}
-                    className="bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 font-medium"
-                  >
-                    <FaTimesCircle className="w-4 h-4" />
-                    Tidak, itu bukan saya
-                  </button>
-                  <button
-                    onClick={() => handleValidation(true)}
-                    className="bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 font-medium"
-                  >
-                    <FaCheck className="w-4 h-4" />
-                    Ya, itu saya
-                  </button>
-                </div>
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => handleValidation(false)}
+                  className="border-4 border-black py-3 font-bold uppercase hover:bg-red-500 hover:text-white transition-all brutalist-shadow-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                >
+                  Reject
+                </button>
+                <button
+                  onClick={() => handleValidation(true)}
+                  className="bg-black text-white border-4 border-black py-3 font-bold uppercase hover:bg-orange-500 hover:text-black transition-all brutalist-shadow-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                >
+                  Confirm
+                </button>
               </div>
 
-              {/* Additional Actions */}
-              <div className="flex items-center justify-center gap-2">
+              <div className="mt-6 text-center">
                 <button
                   onClick={() => {
                     setShowResult(false);
@@ -572,10 +517,9 @@ const FaceRecognition: React.FC = () => {
                       startScanning();
                     }, 300);
                   }}
-                  className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center gap-1"
+                  className="text-xs font-bold uppercase text-slate-400 hover:text-black flex items-center justify-center gap-2 mx-auto"
                 >
-                  <FaRedo className="w-3 h-3" />
-                  Scan Ulang
+                  <FaRedo /> Reset Scanner
                 </button>
               </div>
             </div>
@@ -583,7 +527,6 @@ const FaceRecognition: React.FC = () => {
         </div>
       )}
 
-      {/* Hidden Canvas for Face Detection */}
       <canvas ref={canvasRef} className="hidden" />
     </div>
   );

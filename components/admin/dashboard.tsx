@@ -20,6 +20,7 @@ import {
   FaFilter,
   FaBars,
   FaTimes,
+  FaTrash,
 } from "react-icons/fa";
 
 interface StatCard {
@@ -30,12 +31,12 @@ interface StatCard {
   gradient: string;
 }
 
-interface RecentActivity {
+interface StudentData {
   id: number;
-  user: string;
-  action: string;
-  time: string;
-  status: "success" | "pending" | "error";
+  nama: string;
+  nisn: string;
+  kelas: string;
+  status: "terblokir" | "tidak terblokir";
 }
 
 const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
@@ -82,41 +83,41 @@ const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
     },
   ];
 
-  const recentActivities: RecentActivity[] = [
+  const studentData: StudentData[] = [
     {
       id: 1,
-      user: "Ahmad Rizki",
-      action: "Menambah produk baru",
-      time: "2 menit yang lalu",
-      status: "success",
+      nama: "Ahmad Rizki",
+      nisn: "1234567890",
+      kelas: "XII RPL 1",
+      status: "tidak terblokir",
     },
     {
       id: 2,
-      user: "Siti Nurhaliza",
-      action: "Update profil pengguna",
-      time: "15 menit yang lalu",
-      status: "success",
+      nama: "Siti Nurhaliza",
+      nisn: "1234567891",
+      kelas: "XI TKJ 2",
+      status: "tidak terblokir",
     },
     {
       id: 3,
-      user: "Budi Santoso",
-      action: "Menghapus data kategori",
-      time: "1 jam yang lalu",
-      status: "error",
+      nama: "Budi Santoso",
+      nisn: "1234567892",
+      kelas: "X DKV 1",
+      status: "terblokir",
     },
     {
       id: 4,
-      user: "Dewi Lestari",
-      action: "Export laporan penjualan",
-      time: "2 jam yang lalu",
-      status: "success",
+      nama: "Dewi Lestari",
+      nisn: "1234567893",
+      kelas: "XII MM 3",
+      status: "tidak terblokir",
     },
     {
       id: 5,
-      user: "Eko Prasetyo",
-      action: "Menunggu verifikasi",
-      time: "3 jam yang lalu",
-      status: "pending",
+      nama: "Eko Prasetyo",
+      nisn: "1234567894",
+      kelas: "XI RPL 2",
+      status: "terblokir",
     },
   ];
 
@@ -180,8 +181,7 @@ const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="p-2 rounded-md text-slate-600 hover:bg-slate-100 relative"
-                >
-                </button>
+                ></button>
 
                 {/* Notification Dropdown - Adjusted for mobile */}
                 {showNotifications && (
@@ -237,7 +237,6 @@ const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
                 {/* User dropdown */}
                 {userMenuOpen && (
                   <div className="absolute right-0 top-12 w-44 bg-white rounded-lg shadow-lg border border-slate-200 z-50 overflow-hidden">
-                    
                     <div className="border-t border-slate-100" />
                     <button
                       onClick={() => {
@@ -524,13 +523,13 @@ const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Pengguna
+                    Nama
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Aktivitas
+                    NISN
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Waktu
+                    Kelas
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Status
@@ -541,49 +540,46 @@ const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {recentActivities.map((activity) => (
+                {studentData.map((student) => (
                   <tr
-                    key={activity.id}
+                    key={student.id}
                     className="hover:bg-slate-50 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <img
-                          src={`https://picsum.photos/seed/user${activity.id}/32/32.jpg`}
-                          alt={activity.user}
+                          src={`https://picsum.photos/seed/student${student.id}/32/32.jpg`}
+                          alt={student.nama}
                           className="w-8 h-8 rounded-full mr-3"
                         />
                         <span className="text-sm font-medium text-slate-900">
-                          {activity.user}
+                          {student.nama}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600">
-                      {activity.action}
+                      {student.nisn}
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-500">
-                      {activity.time}
+                      {student.kelas}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
-                          activity.status === "success"
+                          student.status === "tidak terblokir"
                             ? "bg-green-100 text-green-800"
-                            : activity.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {activity.status === "success"
-                          ? "Berhasil"
-                          : activity.status === "pending"
-                          ? "Menunggu"
-                          : "Gagal"}
+                        {student.status === "tidak terblokir"
+                          ? "Tidak Terblokir"
+                          : "Terblokir"}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <button className="text-blue-600 hover:text-blue-800">
-                        Detail
+                      <button className="text-red-600 hover:text-red-800 flex items-center gap-1">
+                        <FaTrash className="w-4 h-4" />
+                        <span>Delete</span>
                       </button>
                     </td>
                   </tr>
@@ -594,45 +590,40 @@ const Dashboard: React.FC<{ onOpenSidebar?: () => void }> = ({
 
           {/* Mobile Card View */}
           <div className="sm:hidden divide-y divide-slate-200">
-            {recentActivities.map((activity) => (
+            {studentData.map((student) => (
               <div
-                key={activity.id}
+                key={student.id}
                 className="p-4 hover:bg-slate-50 transition-colors"
               >
                 <div className="flex items-start space-x-3">
                   <img
-                    src={`https://picsum.photos/seed/user${activity.id}/40/40.jpg`}
-                    alt={activity.user}
+                    src={`https://picsum.photos/seed/student${student.id}/40/40.jpg`}
+                    alt={student.nama}
                     className="w-10 h-10 rounded-full"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm font-medium text-slate-900 truncate">
-                        {activity.user}
+                        {student.nama}
                       </p>
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
-                          activity.status === "success"
+                          student.status === "tidak terblokir"
                             ? "bg-green-100 text-green-800"
-                            : activity.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {activity.status === "success"
-                          ? "Berhasil"
-                          : activity.status === "pending"
-                          ? "Menunggu"
-                          : "Gagal"}
+                        {student.status === "tidak terblokir"
+                          ? "Tidak Terblokir"
+                          : "Terblokir"}
                       </span>
                     </div>
                     <p className="text-sm text-slate-600 mb-1">
-                      {activity.action}
+                      NISN: {student.nisn} | Kelas: {student.kelas}
                     </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-slate-500">{activity.time}</p>
-                      <button className="text-blue-600 hover:text-blue-800 text-sm">
-                        Detail
+                    <div className="flex items-center justify-end mt-2">
+                      <button className="text-red-600 hover:text-red-800 text-sm flex items-center gap-1">
+                        <FaTrash className="w-3 h-3" /> Delete
                       </button>
                     </div>
                   </div>
