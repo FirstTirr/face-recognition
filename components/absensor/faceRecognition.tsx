@@ -250,34 +250,34 @@ const FaceRecognition: React.FC = () => {
                         className="pointer-events-none absolute left-1/2 top-1/2"
                         style={{
                           transform: "translate(-50%, -50%)",
-                          width: "68vw",
-                          height: "85vw",
+                          width: "86vw",
+                          height: "100vw",
                           maxWidth: "95%",
-                          maxHeight: "92%",
-                          minWidth: "120px",
-                          minHeight: "160px",
+                          maxHeight: "100%",
+                          minWidth: "180px",
+                          minHeight: "220px",
                           border: "4px solid #a78bfa",
                           borderRadius: "50% / 60%",
                           boxSizing: "border-box",
                           zIndex: 10,
                           ...(window.innerWidth >= 640
                             ? {
-                                width: "38vw",
-                                height: "55vw",
+                                width: "44vw",
+                                height: "62vw",
                                 minWidth: "160px",
-                                minHeight: "200px",
-                                maxWidth: "420px",
-                                maxHeight: "520px",
+                                minHeight: "220px",
+                                maxWidth: "520px",
+                                maxHeight: "640px",
                               }
                             : {}),
                           ...(window.innerWidth >= 1024
                             ? {
-                                width: "28vw",
-                                height: "38vw",
+                                width: "34vw",
+                                height: "46vw",
                                 minWidth: "140px",
                                 minHeight: "180px",
-                                maxWidth: "340px",
-                                maxHeight: "400px",
+                                maxWidth: "420px",
+                                maxHeight: "520px",
                               }
                             : {}),
                         }}
