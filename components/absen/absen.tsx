@@ -127,7 +127,7 @@ export default function AbsenHarian({
               </span>
             </div>
             <h1 className="text-4xl font-black tracking-tight mb-2">
-              {greeting} <span className="text-emerald-400">Waka Kesiswaan</span>
+              {greeting} <span className="text-emerald-400">Siswa</span>
             </h1>
             <p className="text-slate-400 max-w-md leading-relaxed">
               Selamat datang di dashboard monitoring absensi. Pantau kehadiran
@@ -149,28 +149,7 @@ export default function AbsenHarian({
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Action Bar (Controls) */}
-      <div className="flex flex-col sm:flex-row justify-end items-center gap-4 mb-8">
-        <div className="flex gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:flex-none">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaCalendarAlt className="text-slate-400" />
-            </div>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm shadow-sm w-full"
-            />
-          </div>
-          <button className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all text-sm flex-1 sm:flex-none">
-            <FaDownload />
-            <span>Export</span>
-          </button>
-        </div>
-      </div>
+      </div>  
 
       {/* Info Cards / Rules */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
